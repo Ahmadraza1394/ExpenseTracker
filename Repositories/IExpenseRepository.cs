@@ -1,16 +1,10 @@
-﻿using PersonalExpenseTracker.Models.Domain;
+﻿using PersonalExpenseTracker.Models.DTO;
 
-namespace PersonalExpenseTracker.Repositories
+public interface IExpenseRepository
 {
-    public interface IExpenseRepository
-    {
-
-        Task<List<Expense>> GetAllAsync();
-        Task<Expense> GetByIdAsync(int id);
-        Task<Expense> CreateAsync(Expense expense);
-
-        Task<Expense> UpdateAsync(int id, Expense expense);
-
-        Task<Expense> DeleteAsync(int id);
-    }
+    Task<List<ExpenseDto>> GetAllAsync();
+    Task<ExpenseDto> CreateAsync(AddExpenseRequestDto dto);
+    Task<ExpenseDto> GetByIdAsync(Guid id);
+    Task<ExpenseDto> UpdateAsync(Guid id, AddExpenseRequestDto dto);
+    Task<bool> DeleteAsync(Guid id);
 }

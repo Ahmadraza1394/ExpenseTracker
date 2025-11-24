@@ -1,6 +1,10 @@
 using PersonalExpenseTracker.Data;
 using Microsoft.EntityFrameworkCore;
 using PersonalExpenseTracker.Repositories;
+using AutoMapper;
+using PersonalExpenseTracker.Mapping;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +15,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//Register Repositories
+builder.Services.AddScoped<IUserRepository, SQLUserRepository>();
 builder.Services.AddScoped<IExpenseRepository, SQLExpenseRepository>();
 
 // Add DbContext
@@ -19,6 +25,10 @@ builder.Services.AddDbContext<PersonalExpenseDbContext>(options =>
 );
 
 
+
+
+//Automapper Configuration
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 

@@ -1,39 +1,66 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using PersonalExpenseTracker.Data;
-using Microsoft.EntityFrameworkCore;
-using PersonalExpenseTracker.Repositories;
-using PersonalExpenseTracker.Models.Domain;
+﻿using Microsoft.AspNetCore.Mvc;
+using PersonalExpenseTracker.Models.DTO;
 
-namespace PersonalExpenseTracker.Controllers
+[ApiController]
+[Route("api/[controller]")]
+public class PersonalExpenseController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class PersonalExpenseController : ControllerBase
+    private readonly IExpenseRepository expenseRepository;
+
+    public PersonalExpenseController(IExpenseRepository expenseRepository)
     {
-        
-        private readonly IExpenseRepository expenseRepository;
-     
+        this.expenseRepository = expenseRepository;
+    }
 
-        public PersonalExpenseController(IExpenseRepository expenseRepository)
+    [HttpGet]
+    public async Task<IActionResult> GetAllExpense()
+    {
+        var expenses = await expenseRepository.GetAllAsync();
+        return Ok(expenses);
+    }
+    [HttpGet]
+    [Route("{id:guid}")]
+    public async Task<IActionResult> GetExpenseById([FromRoute] Guid id)
+    {
+        var expense = await expenseRepository.GetByIdAsync(id);
+        if (expense == null)
         {
-            
-            this.expenseRepository = expenseRepository;
-          
+            return NotFound();
         }
+        return Ok(expense);
+    }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllExpense()
+    //Deleting expense
+    [HttpDelete]
+    [Route("{id:guid}")]
+    public async Task<IActionResult> DeleteExpense([FromRoute] Guid id)
+    {
+        var deleted = await expenseRepository.DeleteAsync(id);
+        if (!deleted)
         {
-            var domainExpenseModel= await expenseRepository.GetAllAsync();
-
-            
-
-
-
-            return Ok(domainExpenseModel);
+            return NotFound();
         }
-       
+        return NoContent();
+    }
 
+
+    //Updating expense
+    [HttpPut]
+    [Route("{id:guid}")]
+    public async Task<IActionResult> UpdateExpense([FromRoute] Guid id, [FromBody] AddExpenseRequestDto dto)
+    {
+        var updatedExpense = await expenseRepository.UpdateAsync(id, dto);
+        if (updatedExpense == null)
+        {
+            return NotFound();
+        }
+        return Ok(updatedExpense);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddExpense([FromBody] AddExpenseRequestDto dto)
+    {
+        var expenseDto = await expenseRepository.CreateAsync(dto);
+        return Ok(expenseDto);
     }
 }

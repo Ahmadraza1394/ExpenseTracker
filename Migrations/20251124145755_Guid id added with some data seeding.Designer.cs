@@ -12,8 +12,8 @@ using PersonalExpenseTracker.Data;
 namespace PersonalExpenseTracker.Migrations
 {
     [DbContext(typeof(PersonalExpenseDbContext))]
-    [Migration("20251121201914_user and expense added in the database")]
-    partial class userandexpenseaddedinthedatabase
+    [Migration("20251124145755_Guid id added with some data seeding")]
+    partial class Guididaddedwithsomedataseeding
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,11 +27,9 @@ namespace PersonalExpenseTracker.Migrations
 
             modelBuilder.Entity("PersonalExpenseTracker.Models.Domain.Expense", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
@@ -46,8 +44,8 @@ namespace PersonalExpenseTracker.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -58,31 +56,38 @@ namespace PersonalExpenseTracker.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            Amount = 1500.50m,
-                            Date = new DateTime(2025, 11, 19, 20, 19, 12, 776, DateTimeKind.Utc).AddTicks(3416),
-                            Notes = "Bought vegetables and snacks",
+                            Id = new Guid("f94c2c07-9f92-4c21-9cb8-df1e0227d333"),
+                            Amount = 2500.75m,
+                            Date = new DateTime(2025, 11, 21, 14, 57, 53, 526, DateTimeKind.Utc).AddTicks(9893),
+                            Notes = "Bought fruits, vegetables, snacks",
                             Title = "Grocery Shopping",
-                            UserId = 1
+                            UserId = new Guid("c6b7c56f-1c72-4c2e-9c11-5cdd7d00c111")
                         },
                         new
                         {
-                            Id = 2,
-                            Amount = 500m,
-                            Date = new DateTime(2025, 11, 20, 20, 19, 12, 776, DateTimeKind.Utc).AddTicks(3427),
-                            Notes = "Jazz monthly bundle",
-                            Title = "Mobile Recharge",
-                            UserId = 1
+                            Id = new Guid("ab7bb8f4-950e-4c84-b6d7-214a96ac3333"),
+                            Amount = 5200.00m,
+                            Date = new DateTime(2025, 11, 23, 14, 57, 53, 526, DateTimeKind.Utc).AddTicks(9904),
+                            Notes = "Car petrol full tank",
+                            Title = "Fuel Refill",
+                            UserId = new Guid("c6b7c56f-1c72-4c2e-9c11-5cdd7d00c111")
+                        },
+                        new
+                        {
+                            Id = new Guid("d39afe32-a4f7-4d53-9668-0f0726c44444"),
+                            Amount = 2500.00m,
+                            Date = new DateTime(2025, 11, 19, 14, 57, 53, 526, DateTimeKind.Utc).AddTicks(9906),
+                            Notes = "PTCL monthly bill",
+                            Title = "Internet Bill",
+                            UserId = new Guid("52a6240b-0f04-4be8-b54a-d1f6c6e05522")
                         });
                 });
 
             modelBuilder.Entity("PersonalExpenseTracker.Models.Domain.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -106,11 +111,19 @@ namespace PersonalExpenseTracker.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            CreatedAt = new DateTime(2025, 11, 21, 20, 19, 12, 776, DateTimeKind.Utc).AddTicks(3249),
-                            Email = "test@example.com",
-                            Name = "Test User",
-                            Password = "hashedpassword123"
+                            Id = new Guid("c6b7c56f-1c72-4c2e-9c11-5cdd7d00c111"),
+                            CreatedAt = new DateTime(2025, 11, 24, 14, 57, 53, 526, DateTimeKind.Utc).AddTicks(9833),
+                            Email = "ahmad@example.com",
+                            Name = "Ahmad Raza",
+                            Password = "123456"
+                        },
+                        new
+                        {
+                            Id = new Guid("52a6240b-0f04-4be8-b54a-d1f6c6e05522"),
+                            CreatedAt = new DateTime(2025, 11, 24, 14, 57, 53, 526, DateTimeKind.Utc).AddTicks(9842),
+                            Email = "ali@example.com",
+                            Name = "Ali Khan",
+                            Password = "password123"
                         });
                 });
 
