@@ -12,7 +12,7 @@ namespace PersonalExpenseTracker.Helpers
             return hasher.HashPassword(null, password);
         }
 
-        // Verify password
+        // Verify password here
         public bool VerifyPassword(string hashedPassword, string providedPassword)
         {
             var result = hasher.VerifyHashedPassword(null, hashedPassword, providedPassword);
