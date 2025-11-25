@@ -7,4 +7,6 @@ public interface IExpenseRepository
     Task<ExpenseDto> GetByIdAsync(Guid id);
     Task<ExpenseDto> UpdateAsync(Guid id, AddExpenseRequestDto dto);
     Task<bool> DeleteAsync(Guid id);
+    Task<List<ExpenseDto>> GetAllByUserAsync(Guid userId);
+
 }

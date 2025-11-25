@@ -8,5 +8,4 @@
         // Optional — only update if provided
         public string? Password { get; set; }
     }
-
 }

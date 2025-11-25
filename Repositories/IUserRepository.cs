@@ -9,7 +9,11 @@ namespace PersonalExpenseTracker.Repositories
         Task<List<UserDto>> GetAllUsersAsync();
         Task<User?> GetByEmailAsync(string email); // optional, for login or email checks
 
-        //updating user
-        //Task<User?> UpdateUser(Guid id, UpdateUserDto dto);
+        
+
+        Task<UserDto?> UpdateUserAsync(Guid id, UpdateUserDto dto);
+
+        Task<UserDto?> DeleteUserAsync(Guid id);
+
     }
 }

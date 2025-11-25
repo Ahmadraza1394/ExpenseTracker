@@ -12,8 +12,7 @@ namespace PersonalExpenseTracker.Repositories
         private readonly PersonalExpenseDbContext dbContext;
         
         private readonly PasswordHelper passwordHelper;
-        //private readonly PasswordHasher<User> passwordHasher = new PasswordHasher<User>();
-
+       
 
         public SQLUserRepository(PersonalExpenseDbContext dbContext)
         {
@@ -36,7 +35,7 @@ namespace PersonalExpenseTracker.Repositories
                 Id = Guid.NewGuid(),
                 Name = dto.Name,
                 Email = dto.Email,
-                Password = hashedPassword,
+                PasswordHash = hashedPassword,
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -51,6 +50,42 @@ namespace PersonalExpenseTracker.Repositories
                 Expenses = new List<ExpenseDto>()
             };
         }
+
+        public async Task<UserDto?> DeleteUserAsync(Guid id)
+        {
+            // Fetch user with expenses (optional: to return full dto before deletion)
+            var user = await dbContext.Users
+                .Include(u => u.Expenses)
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user == null)
+                return null;
+
+            // Prepare a DTO to return before deleting
+            var deletedUserDto = new UserDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Expenses = user.Expenses.Select(e => new ExpenseDto
+                {
+                    Id = e.Id,
+                    Title = e.Title,
+                    Amount = e.Amount,
+                    Date = e.Date,
+                    Notes = e.Notes,
+                    UserId = user.Id,
+                    UserName = user.Name
+                }).ToList()
+            };
+
+            // Remove user (EF will delete expenses if cascade delete is enabled)
+            dbContext.Users.Remove(user);
+            await dbContext.SaveChangesAsync();
+
+            return deletedUserDto;
+        }
+
 
         public async Task<List<UserDto>> GetAllUsersAsync()
         {
@@ -83,28 +118,47 @@ namespace PersonalExpenseTracker.Repositories
         }
 
 
+        public async Task<UserDto?> UpdateUserAsync(Guid id, UpdateUserDto dto)
+        {
+            //  Fetch the user, include expenses to avoid null errors
+            var user = await dbContext.Users
+                .Include(u => u.Expenses)
+                .FirstOrDefaultAsync(u => u.Id == id);
 
-        //Updating user details
-        //public async Task<User?> UpdateUser(Guid id, UpdateUserDto dto)
-        //{
-        //    var user = await dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+            if (user == null) return null;
 
-        //    if (user == null)
-        //        return null;
+            // Update the basic fields
+            user.Name = dto.Name;
+            user.Email = dto.Email;
 
-        //    // Update name + email
-        //    user.Name = dto.Name;
-        //    user.Email = dto.Email;
+            // Update password only if provided
+            if (!string.IsNullOrWhiteSpace(dto.Password))
+            {
+                user.PasswordHash = passwordHelper.HashPassword(dto.Password);
+            }
 
-        //    // Update password only if provided
-        //    if (!string.IsNullOrWhiteSpace(dto.Password))
-        //    {
-        //        user.PasswordHash = passwordHasher.HashPassword(user, dto.Password);
-        //    }
+            await dbContext.SaveChangesAsync();
 
-        //    await dbContext.SaveChangesAsync();
-        //    return user;
-        //}
+            // Map to UserDto
+            return new UserDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Expenses = (user.Expenses ?? new List<Expense>()) // prevent null
+                    .Select(e => new ExpenseDto
+                    {
+                        Id = e.Id,
+                        Title = e.Title,
+                        Amount = e.Amount,
+                        Date = e.Date,
+                        Notes = e.Notes,
+                        UserId = user.Id,
+                        UserName = user.Name
+                    }).ToList()
+            };
+        }
+
 
     }
 }

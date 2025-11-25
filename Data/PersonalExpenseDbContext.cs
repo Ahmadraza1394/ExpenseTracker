@@ -33,7 +33,7 @@ namespace PersonalExpenseTracker.Data
                     Id = user1Id,
                     Name = "Ahmad Raza",
                     Email = "ahmad@example.com",
-                    Password = "123456", // normal demo password (should be hashed in real apps)
+                    PasswordHash = "123456", // normal demo password (should be hashed in real apps)
                     CreatedAt = DateTime.UtcNow
                 },
                 new User
@@ -41,7 +41,7 @@ namespace PersonalExpenseTracker.Data
                     Id = user2Id,
                     Name = "Ali Khan",
                     Email = "ali@example.com",
-                    Password = "password123",
+                    PasswordHash = "password123",
                     CreatedAt = DateTime.UtcNow
                 }
             });

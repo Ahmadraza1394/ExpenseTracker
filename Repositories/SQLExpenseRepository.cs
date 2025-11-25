@@ -40,6 +40,7 @@ public class SQLExpenseRepository : IExpenseRepository
         return mapper.Map<ExpenseDto>(expense);
     }
 
+
     public async Task<ExpenseDto> UpdateAsync(Guid id, AddExpenseRequestDto dto)
     {
         var existingExpense = await dbContext.Expenses.FindAsync(id);
@@ -61,4 +62,14 @@ public class SQLExpenseRepository : IExpenseRepository
         await dbContext.SaveChangesAsync();
         return true;
     }
+    public async Task<List<ExpenseDto>> GetAllByUserAsync(Guid userId)
+    {
+        var expenses = await dbContext.Expenses
+            .Where(x => x.UserId == userId)
+            .Include(x => x.User)
+            .ToListAsync();
+
+        return mapper.Map<List<ExpenseDto>>(expenses);
+    }
+
 }

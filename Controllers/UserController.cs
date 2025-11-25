@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PersonalExpenseTracker.Models.DTO;
 using PersonalExpenseTracker.Repositories;
 
@@ -47,17 +48,35 @@ namespace PersonalExpenseTracker.Controllers
             }
             return Ok(user);
         }
-        //updating user
-        //[HttpPut("{id:guid}")]
-        //public async Task<IActionResult> UpdateUser(Guid id, UpdateUserDto dto)
-        //{
-        //    var updatedUser = await userRepository.UpdateUser(id, dto);
+        
 
-        //    if (updatedUser == null)
-        //        return NotFound("User not found.");
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> UpdateUser([FromRoute] Guid id, [FromBody] UpdateUserDto dto)
+        {
+            try
+            {
+                var updatedUser = await userRepository.UpdateUserAsync(id, dto);
+                if (updatedUser == null) return NotFound("User not found");
 
-        //    return Ok(updatedUser);
-        //}
+                return Ok(updatedUser);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteUser([FromRoute] Guid id)
+        {
+            var deletedUser = await userRepository.DeleteUserAsync(id);
+
+            if (deletedUser == null)
+                return NotFound("User not found");
+
+            return Ok(deletedUser);
+        }
+
 
     }
 }

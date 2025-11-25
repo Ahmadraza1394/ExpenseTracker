@@ -7,9 +7,9 @@
         public decimal Amount { get; set; }
         public DateTime Date { get; set; }
         public string Notes { get; set; }
-
-        public Guid UserId { get; set; }
-        public string UserName { get; set; }  // Only return needed user data
+        public Guid UserId { get; set; }  // Important
+        public string UserName { get; set; }
     }
+
 
 }
